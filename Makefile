@@ -1,4 +1,4 @@
-CFLAGS=-Wall -O2 −fopenmp
+CFLAGS=-Wall -O2
 
 OBJS =  main.o julia.o savebmp.o color.o getparams.o
 
@@ -22,7 +22,7 @@ julia_acc_s: $(OBJS_ACC_S)
 	pgcc -acc -Minfo -ta=nvidia,cc13 -o julia_acc_s $(OBJS_ACC_S)
 
 julia_omp: $(OBJS_OMP_C)
-	gcc -o julia_omp $(OBJS_OMP_C)
+	gcc -o julia_omp $(OBJS_OMP_C) -fopenmp
 
 
 # this runs are on Mac. On Linux, e.g. penguin, replace open by gthumb
@@ -58,10 +58,10 @@ run9:
 
 	# this runs are on Mac. On Linux, e.g. penguin, replace open by gthumb
 run_acc_s:
-	./julia_acc_s 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp ; gthumb image.bmp
+	./julia_acc_s 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp ;
 
 run_omp:
-	./julia_omp 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp ; gthumb image.bmp
+	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 17 ./julia_omp 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp results.txt;
 
 clean:
 	@rm -rf $(OBJS) julia julia_acc_s *~ *.bak *.bmp
