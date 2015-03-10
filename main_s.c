@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <sys/time.h>
 #include <time.h>
 
 #include "julia_acc_s.h"
@@ -14,7 +15,6 @@ int main(int argc, char *argv[])
   gettimeofday(&t0, 0);
 
   int width, height, maxiter, flag;
-  int num_procs;
 
   float x[2], y[2], c[2];
   char *image, *stats;
@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
 
   /* save our picture for the viewer */
   saveBMP(image, iterations, width, height);
-
 
   free(iterations);
 

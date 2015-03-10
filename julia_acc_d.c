@@ -1,5 +1,7 @@
 #include <assert.h>
 #include <math.h>
+#include <time.h>
+#include <stdlib.h>
 #ifdef _OPENACC
 #include <openacc.h>
 #endif
@@ -9,10 +11,11 @@
 int julia(const double *x, int xres, const double *y, int yres, const double *c,
 		int flag, int maxIterations, int *iterations, int num_procs, char * stats)
 {
+	srand(time(NULL)); // Seed random value generator
 	int maxIterationCount = 0, i,j;
 	int count;
 
-double xgap, ygap, savex, savey;
+	double xgap, ygap, savex, savey;
 	xgap = (x[1] - x[0]) / xres;
 	ygap = (y[1] - y[0]) / yres;
 
