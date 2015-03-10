@@ -1,5 +1,5 @@
 int julia(const float *x, int xres, const float *y, int yres, const float *c, int flag, int maxIterations,
-    int *iterations, int num_procs, char *stats);
+    int *iterations, char *stats);
 
 void getParams(char **argv,  int *flag, float *c, float *x, float *y, int *width, int *height,
          int *maxiter, char **image, char **stats);

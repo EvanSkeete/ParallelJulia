@@ -18,46 +18,45 @@ julia_acc_s: $(OBJS_ACC_S)
 julia_omp: $(C_OMP)
 	gcc -o julia_omp $(C_OMP) -fopenmp -O3
 
-# this runs are on Mac. On Linux, e.g. penguin, replace open by gthumb
-run0:
-	./julia 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp ; open image.bmp
-
-run1: julia
-	./julia 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 3000  image.bmp ; open image.bmp
-
-run2: julia
-	./julia 0 -0.4 0.6  -0.181862 -0.181772 1.019085 1.019175 1000 1000 100  image.bmp ; open image.bmp
-
-run3: julia
-	./julia 0 -0.4 0.6  -0.181862 -0.181772 1.019085 1.019175 2000 2000 10000  image.bmp ; open image.bmp
-
-run4: julia
-	./julia 1 -0.8  0.156  -2 2 -2 2 1000 1000 100  image.bmp ; open image.bmp
-
-run5: julia
-	./julia 1 -0.8  0.156  -2 2 -2 2 1000 1000 1000  image.bmp ; open image.bmp
-
-run6: julia
-	./julia 1 -0.8  0.156  -.2 .2 -.2 .2 4000 4000 10000  image.bmp ; open image.bmp
-
-run7: julia
-	./julia 1 0.285 0.01  -2 2 -2 2 1000 1000 1000  image.bmp ; open image.bmp
-
-run8: julia
-	./julia 1 0.285 0.01  -.2 .2 -.2 .2 1000 1000 1000  image.bmp ; open image.bmp
-
-run9:
-	./julia 0 -0.4 0.6  -2 2 -2 2  1000 1000 1000  image.bmp ; open image.bmp
-
-	# this runs are on Mac. On Linux, e.g. penguin, replace open by gthumb
 run_acc_s:
-	time ./julia_acc_s 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp ;
+	./julia_acc_s 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-acc-s;
 
-run_omp:
-	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 17 ./julia_omp 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp results.txt;
+run_acc_d:
+	./julia_acc_d 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-acc-d;
+
+run_omp_gpu: run_omp_gpu_test_1 run_omp_gpu_test_2 run_omp_gpu_test_4 run_omp_gpu_test_8 run_omp_gpu_test_16
+
+run_omp_gpu_test_1:
+	export OMP_NUM_THREADS=1; ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-gpu-1;
+
+run_omp_gpu_test_2:
+	export OMP_NUM_THREADS=2; ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-gpu-2;
+
+run_omp_gpu_test_4:
+	export OMP_NUM_THREADS=4; ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-gpu-4;
+
+run_omp_gpu_test_8:
+	export OMP_NUM_THREADS=8; ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-gpu-8;
+
+run_omp_gpu_test_16:
+	export OMP_NUM_THREADS=16; ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-gpu-16;
+
+run_omp_wobbie: run_omp_test_1 run_omp_test_2 run_omp_test_4 run_omp_test_8 run_omp_test_16
+
+run_omp_test_1:
+	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 1 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-1;
+
+run_omp_test_2:
+	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 2 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-2;
+
+run_omp_test_4:
+	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 4 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-4;
 
 run_omp_test_8:
-	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 8 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000  image.bmp results.txt;
+	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 8 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-8;
+
+run_omp_test_16:
+	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 16 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-16;
 
 clean:
 	@rm -rf $(OBJS) $(OBJS_ACC_S) $(OBJS_ACC_D) julia_omp julia_acc_s julia_acc_d *~ *.bak *.bmp

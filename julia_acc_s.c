@@ -11,7 +11,7 @@
 #include "julia_acc_s.h"
 
 int julia(const float *x, int xres, const float *y, int yres, const float *c,
-	int flag, int maxIterations, int *iterations, int num_procs, char * stats)
+	int flag, int maxIterations, int *iterations, char * stats)
 {
 	struct timeval t0, t1;
 	srand(time(NULL)); // Seed random value generator

@@ -5,8 +5,6 @@
 
 #include "julia_acc_s.h"
 
-#define NUM_PROCS 8
-
 int main(int argc, char *argv[])
 {
 
@@ -24,7 +22,7 @@ int main(int argc, char *argv[])
   assert(iterations);
 
   /* compute set */
-  int maxCount = julia(x, width, y, height, c, flag, maxiter, iterations, NUM_PROCS, stats);
+  int maxCount = julia(x, width, y, height, c, flag, maxiter, iterations, stats);
   printf("max iterations hit: %d /%d\n", maxCount, maxiter);
 
   /* save our picture for the viewer */
