@@ -1,3 +1,4 @@
+CC=gcc
 CFLAGS= -Wall -O3
 
 C_OMP = main.c julia_omp.c savebmp.c color.c getparams.c
