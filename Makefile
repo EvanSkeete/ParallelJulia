@@ -4,7 +4,7 @@ C_OMP=  main.c julia_omp.c savebmp.c color.c getparams.c
 
 OBJS_OMP =  main.o julia_omp.o savebmp.o color.o getparams.o
 
-OBJS_ACC = main.o julia_acc_d.o main_s.o julia_acc_s.o savebmp.c color.c getparams.c
+OBJS_ACC = main.o julia_acc_d.o main_s.o julia_acc_s.o savebmp.o color.o getparams.o
 
 C_ACC =  main.c julia_acc_d.c main_s.c julia_acc_s.c savebmp.c color.c getparams.c
 
