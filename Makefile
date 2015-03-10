@@ -24,7 +24,7 @@ run_acc_s:
 run_acc_d:
 	./julia_acc_d 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-acc-d;
 
-run_omp_gpu: run_omp_gpu_test_1 run_omp_gpu_test_2 run_omp_gpu_test_4 run_omp_gpu_test_8 run_omp_gpu_test_16
+run_omp_gpu: run_omp_gpu_test_1 run_omp_gpu_test_2 run_omp_gpu_test_4 run_omp_gpu_test_8 run_omp_gpu_test_16 run_omp_gpu_test_32
 
 run_omp_gpu_test_1:
 	export OMP_NUM_THREADS=1; ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-gpu-1;
@@ -41,7 +41,10 @@ run_omp_gpu_test_8:
 run_omp_gpu_test_16:
 	export OMP_NUM_THREADS=16; ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-gpu-16;
 
-run_omp_wobbie: run_omp_test_1 run_omp_test_2 run_omp_test_4 run_omp_test_8 run_omp_test_16
+run_omp_gpu_test_32:
+	export OMP_NUM_THREADS=32; ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-gpu-32;
+
+run_omp_wobbie: run_omp_test_1 run_omp_test_2 run_omp_test_4 run_omp_test_8 run_omp_test_16 run_omp_test_32
 
 run_omp_test_1:
 	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 1 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-1;
@@ -57,6 +60,9 @@ run_omp_test_8:
 
 run_omp_test_16:
 	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 16 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-16;
+
+run_omp_test_32:
+	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 32 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000 image.bmp stats-omp-32;
 
 clean:
 	@rm -rf $(OBJS) $(OBJS_ACC_S) $(OBJS_ACC_D) julia_omp julia_acc_s julia_acc_d *~ *.bak *.bmp
