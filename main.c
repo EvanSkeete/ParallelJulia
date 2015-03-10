@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <assert.h>
 #include <sys/time.h>
-#include <time.h>
 
 #include "julia.h"
 
@@ -33,7 +32,7 @@ int main(int argc, char *argv[])
   free(iterations);
 
   gettimeofday(&t1, 0);
-  long elapsed = (t1.tv_sec-t0.tv_sec)*1000000 + t1.tv_usec-t0.tv_usec;
+  long elapsed = (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec);
 
   printf("total_time: %ld\n", elapsed);
 

@@ -59,6 +59,5 @@ run_omp:
 run_omp_test_8:
 	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 8 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000  image.bmp results.txt;
 
-
 clean:
 	@rm -rf $(OBJS) $(OBJS_ACC_S) $(OBJS_ACC_D) julia_omp julia_acc_s julia_acc_d *~ *.bak *.bmp

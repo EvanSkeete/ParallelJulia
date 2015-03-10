@@ -120,7 +120,7 @@ double xgap, ygap;
 	}
 
 	FILE *f;
-	f = fopen(stats,"w");
+	f = fopen(stats, "w");
 
 	for (i=0; i<num_procs; i++){
 		if(global_max_iterations[i] > global_max_iteration_count )
