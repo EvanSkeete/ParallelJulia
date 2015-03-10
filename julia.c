@@ -7,7 +7,7 @@
 #include "julia.h"
 
 int julia(const double *x, int xres, const double *y, int yres, const double *c,
-		int flag, int maxIterations, int *iterations, int num_procs, char * stats)
+		int flag, int maxIterations, int *iterations, char * stats)
 {
 	int maxIterationCount = 0, i,j;
 	int count;
