@@ -1,21 +1,12 @@
-CFLAGS=-Wall -O2
+CFLAGS= -Wall -O3
 
-C_OMP=  main.c julia_omp.c savebmp.c color.c getparams.c
-
-OBJS_OMP =  main.o julia_omp.o savebmp.o color.o getparams.o
-
-OBJS_ACC = main.o julia_acc_d.o main_s.o julia_acc_s.o savebmp.c color.c getparams.c
-
-C_ACC =  main.c julia_acc_d.c main_s.c julia_acc_s.c savebmp.c color.c getparams.c
+C_OMP = main.c julia_omp.c savebmp.c color.c getparams.c
+C_ACC = main.c julia_acc_d.c main_s.c julia_acc_s.c savebmp.c color.c getparams.c
 
 OBJS_ACC_S =  main_s.o julia_acc_s.o savebmp.o color.o getparams.o
-
 OBJS_ACC_D =  main.o julia_acc_d.o savebmp.o color.o getparams.o
 
 all: julia_acc_s julia_acc_d julia_omp
-
-$(OBJS_ACC): $(C_ACC)
-	pgcc -acc -Minfo -ta=nvidia,cc13 -c  $?
 
 julia_acc_d: $(OBJS_ACC_D)
 	pgcc -acc -Minfo -ta=nvidia,cc13 -o julia_acc_d $(OBJS_ACC_D)
@@ -25,7 +16,6 @@ julia_acc_s: $(OBJS_ACC_S)
 
 julia_omp: $(C_OMP)
 	gcc -o julia_omp $(C_OMP) -fopenmp -O3
-
 
 # this runs are on Mac. On Linux, e.g. penguin, replace open by gthumb
 run0:
