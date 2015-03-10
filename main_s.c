@@ -3,19 +3,20 @@
 #include <assert.h>
 #include <time.h>
 
-#include "julia.h"
+#include "julia_acc_s.h"
 
 #define NUM_PROCS 8
 
 int main(int argc, char *argv[])
 {
+
   struct timeval t0, t1;
   gettimeofday(&t0, 0);
 
   int width, height, maxiter, flag;
   int num_procs;
 
-  double x[2], y[2], c[2];
+  float x[2], y[2], c[2];
   char *image, *stats;
   getParams(argv, &flag, c, x, y, &width, &height, &maxiter, &image, &stats);
 
@@ -24,7 +25,7 @@ int main(int argc, char *argv[])
   assert(iterations);
 
   /* compute set */
-  int maxCount =julia(x, width, y, height, c, flag, maxiter, iterations, NUM_PROCS, stats);
+  int maxCount = julia(x, width, y, height, c, flag, maxiter, iterations, NUM_PROCS, stats);
   printf("max iterations hit: %d /%d\n", maxCount, maxiter);
 
   /* save our picture for the viewer */

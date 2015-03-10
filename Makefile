@@ -1,28 +1,30 @@
 CFLAGS=-Wall -O2
 
-OBJS =  main.o julia.o savebmp.o color.o getparams.o
-
-OBJS_OMP_C =  main.c julia_omp.c savebmp.c color.c getparams.c
+C_OMP=  main.c julia_omp.c savebmp.c color.c getparams.c
 
 OBJS_OMP =  main.o julia_omp.o savebmp.o color.o getparams.o
 
-OBJS_ACC_S_C =  main.c julia.c savebmp.c color.c getparams.c
+OBJS_ACC = main.o julia_acc_d.o main_s.o julia_acc_s.o savebmp.c color.c getparams.c
 
-OBJS_ACC_S =  main.o julia.o savebmp.o color.o getparams.o
+C_ACC =  main.c julia_acc_d.c main_s.c julia_acc_s.c savebmp.c color.c getparams.c
 
+OBJS_ACC_S =  main_s.o julia_acc_s.o savebmp.o color.o getparams.o
 
-all: julia
+OBJS_ACC_D =  main.o julia_acc_d.o savebmp.o color.o getparams.o
 
-julia: $(OBJS)
+all: julia_acc_s julia_acc_d julia_omp
 
-$(OBJS_ACC_S): $(OBJS_ACC_S_C)
-	pgcc -acc -Minfo -ta=nvidia,cc13 -c  $(OBJS_ACC_S_C)
+$(OBJS_ACC): $(C_ACC)
+	pgcc -acc -Minfo -ta=nvidia,cc13 -c  $?
+
+julia_acc_d: $(OBJS_ACC_D)
+	pgcc -acc -Minfo -ta=nvidia,cc13 -o julia_acc_d $(OBJS_ACC_D)
 
 julia_acc_s: $(OBJS_ACC_S)
 	pgcc -acc -Minfo -ta=nvidia,cc13 -o julia_acc_s $(OBJS_ACC_S)
 
-julia_omp: $(OBJS_OMP_C)
-	gcc -o julia_omp $(OBJS_OMP_C) -fopenmp
+julia_omp: $(C_OMP)
+	gcc -o julia_omp $(C_OMP) -fopenmp -O3
 
 
 # this runs are on Mac. On Linux, e.g. penguin, replace open by gthumb
@@ -58,10 +60,14 @@ run9:
 
 	# this runs are on Mac. On Linux, e.g. penguin, replace open by gthumb
 run_acc_s:
-	./julia_acc_s 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp ;
+	time ./julia_acc_s 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp ;
 
 run_omp:
 	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 17 ./julia_omp 0 -0.4 0.6  -0.2 -0.1 1  1.1 1000 1000 1000  image.bmp results.txt;
 
+run_omp_test_8:
+	sqsub -t -r 1h --mpp=1.0G  -o parallel.log -f threaded -n 8 ./julia_omp 0 -0.4 0.6 -0.181862 -0.181772 1.019085 1.019175 4000 4000 4000  image.bmp results.txt;
+
+
 clean:
-	@rm -rf $(OBJS) julia julia_acc_s *~ *.bak *.bmp
+	@rm -rf $(OBJS) $(OBJS_ACC_S) $(OBJS_ACC_D) julia_omp julia_acc_s julia_acc_d *~ *.bak *.bmp

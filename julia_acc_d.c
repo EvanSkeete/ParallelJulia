@@ -1,11 +1,7 @@
-#include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include <time.h>
-#include <stdio.h>
-
-#ifdef _OPENMP
-#include <omp.h>
+#ifdef _OPENACC
+#include <openacc.h>
 #endif
 
 #include "julia.h"
@@ -13,61 +9,45 @@
 int julia(const double *x, int xres, const double *y, int yres, const double *c,
 		int flag, int maxIterations, int *iterations, int num_procs, char * stats)
 {
+	int maxIterationCount = 0, i,j;
+	int count;
 
-double xgap, ygap;
+double xgap, ygap, savex, savey;
 	xgap = (x[1] - x[0]) / xres;
 	ygap = (y[1] - y[0]) / yres;
 
-	int global_max_iteration_count = 0;
-	int global_max_iterations[num_procs];
-
-	double global_times[num_procs];
 	int x_array[xres];
 	int y_array[yres];
+	int randIndex;
+	int tmp;
 
-	int i;
+	//int i;
 
 	for(i = 0; i < xres; i++) x_array[i] = i;
 
 	for(i = 0; i < yres; i++) y_array[i] = i;
 
 	for(i = 0; i < xres; i++){
-		int randIndex = rand()%xres;
-		int tmp = x_array[i];
+		randIndex = rand()%xres;
+		tmp = x_array[i];
 		x_array[i] = x_array[randIndex];
 		x_array[randIndex] = tmp;
 	}
 
 	for(i = 0; i < yres; i++){
-		int randIndex = rand()%yres;
-		int tmp = y_array[i];
+		randIndex = rand()%yres;
+		tmp = y_array[i];
 		y_array[i] = y_array[randIndex];
 		y_array[randIndex] = tmp;
 	}
 
-	#ifdef _OPENMP
-	#pragma omp parallel
+	#ifdef _OPENACC
+	#pragma parallel acc loop reduction(max:maxIterationCount) private(count) copyin(iterations[0:xres*yres]) vector(256)
 	#endif
-
-	{
-
-	#ifdef _OPENMP
-		int my_rank = omp_get_thread_num();
-		int thread_count = omp_get_num_threads();
-	#else
-		int my_rank = 0;
-		int thread_count = 1;
-	#endif
-
-	double savex, savey, yi, xi, radius, savex2, xisq, yisq, startt;
-
-	int maxIterationCount = 0;
-	int count, i, j;
-
-	startt = omp_get_wtime();
-	#pragma omp for schedule(guided) collapse(2)
-	for (j = 0; j <= yres; j++) {
+	for (j = 0; j < yres; j++) {
+			double yi;
 			for (i = 0; i < xres; i++) {
+					double xi, radius;
 					/* pixel to coordinates */
 					xi = x[0] + x_array[i] * xgap;
 					yi = y[0] + y_array[j] * ygap;
@@ -78,19 +58,14 @@ double xgap, ygap;
 
 					radius = 0.0;
 					count = 0;
-
-					xisq = xi*xi;
-					yisq = yi*yi;
-
 					while ( radius <= 4.0 && count < maxIterations )
 						{
-							savex2 = xi;
-							xi = xisq - yisq + savex;
+						double savex2 = xi;
+							xi = xi * xi - yi * yi + savex;
 							yi = 2.0f * savex2 * yi + savey;
-							xisq = xi * xi;
-							yisq = yi * yi;
-							radius = xisq + yisq;
+							radius = xi * xi + yi * yi;
 							count++;
+
 						}
 
 					if(count > maxIterationCount )
@@ -102,7 +77,7 @@ double xgap, ygap;
 						likely in the set. */
 					if (radius <= 4.0)
 						{
-							assert(count==maxIterations);
+							//assert(count==maxIterations);
 							*p = 0;
 						}
 					else
@@ -114,23 +89,7 @@ double xgap, ygap;
 				}
 		}
 
-		global_max_iterations[my_rank] = maxIterationCount;
 
-		global_times[my_rank] =  omp_get_wtime() - startt;
-	}
-
-	FILE *f;
-	f = fopen(stats,"w");
-
-	for (i=0; i<num_procs; i++){
-		if(global_max_iterations[i] > global_max_iteration_count )
-			global_max_iteration_count = global_max_iterations[i];
-
-			fprintf(f, "%d %fs %d\n", i, global_times[i], global_max_iterations[i]);
-	}
-
-	fclose(f);
-
-	return global_max_iteration_count;
+	return maxIterationCount;
 
 }
