@@ -3,12 +3,12 @@ CC=pgcc
 
 
 C_OMP = main.c julia_omp.c savebmp.c color.c getparams.c
-C_ACC = main.c julia_acc_d.c main_s.c julia_acc_s.c savebmp.c color.c getparams.c
+C_ACC = main.c julia_acc_d.c main_s.c julia_acc_s.c savebmp.c color.c getparams.c getparams_s.c
 OBJS_OMP = main.o julia_omp.o savebmp.o color.o getparams.o
 
-OBJS_ACC = main.o julia_acc_d.o main_s.o julia_acc_s.o savebmp.o color.o getparams.o
+OBJS_ACC = main.o julia_acc_d.o main_s.o julia_acc_s.o savebmp.o color.o getparams.o getparams_s.o
 
-OBJS_ACC_S =  main_s.o julia_acc_s.o savebmp.o color.o getparams.o
+OBJS_ACC_S =  main_s.o julia_acc_s.o savebmp.o color.o getparams_s.o
 OBJS_ACC_D =  main.o julia_acc_d.o savebmp.o color.o getparams.o
 
 all: julia_acc_s julia_acc_d julia_omp

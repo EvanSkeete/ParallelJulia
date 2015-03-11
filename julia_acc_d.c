@@ -13,7 +13,6 @@ int julia(const double *x, int xres, const double *y, int yres, const double *c,
 	struct timeval t0, t1;
 	srand(time(NULL)); // Seed random value generator
 	int maxIterationCount = 0, i, j;
-	int count;
 
 	double xgap, ygap, savex, savey;
 	xgap = (x[1] - x[0]) / xres;
@@ -22,12 +21,13 @@ int julia(const double *x, int xres, const double *y, int yres, const double *c,
 	// Start timing parallelized function
 	gettimeofday(&t0, NULL);
 
-	#pragma acc parallel copy(iterations[0:xres*yres]) vector_length(256)
+	#pragma acc parallel copy(iterations[0:xres*yres])
 	{
-		#pragma acc loop reduction(max:maxIterationCount) private(count)
+		#pragma acc loop reduction(max:maxIterationCount)
 		for (j = 0; j < yres; j++) {
 			double yi;
 			for (i = 0; i < xres; i++) {
+				int count;
 				double xi, radius;
 					/* pixel to coordinates */
 				xi = x[0] + i * xgap;
@@ -70,7 +70,6 @@ int julia(const double *x, int xres, const double *y, int yres, const double *c,
 			}
 		}
 	}
-
 
 	// Stop timing parallelized julia
 	gettimeofday(&t1, 0);
