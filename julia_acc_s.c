@@ -28,46 +28,45 @@ int julia(const float *x, int xres, const float *y, int yres, const float *c,
 		for (j = 0; j < yres; j++) {
 			double yi;
 			for (i = 0; i < xres; i++) {
-					double xi, radius;
+				double xi, radius;
 					/* pixel to coordinates */
-					xi = x[0] + i * xgap;
-					yi = y[0] + j * ygap;
+				xi = x[0] + i * xgap;
+				yi = y[0] + j * ygap;
 
 					/* initial value for the iteration */
-					savex = flag*c[0] + (1-flag)*xi;
-					savey = flag*c[1] + (1-flag)*yi;
+				savex = flag*c[0] + (1-flag)*xi;
+				savey = flag*c[1] + (1-flag)*yi;
 
-					radius = 0.0;
-					count = 0;
-					while ( radius <= 4.0 && count < maxIterations )
-						{
-						double savex2 = xi;
-							xi = xi * xi - yi * yi + savex;
-							yi = 2.0f * savex2 * yi + savey;
-							radius = xi * xi + yi * yi;
-							count++;
+				radius = 0.0;
+				count = 0;
+				while ( radius <= 4.0 && count < maxIterations )
+				{
+					double savex2 = xi;
+					xi = xi * xi - yi * yi + savex;
+					yi = 2.0f * savex2 * yi + savey;
+					radius = xi * xi + yi * yi;
+					count++;
+				}
 
-						}
+				if(count > maxIterationCount )
+					maxIterationCount = count;
 
-					if(count > maxIterationCount )
-						maxIterationCount = count;
-
-					int *p = iterations + j*xres+i;
+				int *p = iterations + j*xres+i;
 
 					/* If radius <= 4.0, we have hit maxIterations. The point is
 						likely in the set. */
-					if (radius <= 4.0)
-						{
+				if (radius <= 4.0)
+				{
 							//assert(count==maxIterations);
-							*p = 0;
-						}
-					else
+					*p = 0;
+				}
+				else
 						/* radius > 4.0. The point tends to infinity. We recognize
 							this at iteration number count */
-						{
-							*p = count;
-						}
+				{
+					*p = count;
 				}
+			}
 		}
 	}
 
