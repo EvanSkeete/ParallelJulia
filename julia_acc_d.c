@@ -28,7 +28,7 @@ int julia(const double *x, int xres, const double *y, int yres, const double *c,
 			double yi;
 			for (i = 0; i < xres; i++) {
 				int count;
-				double xi, radius;
+				double xi, radius, xisq, yisq;
 					/* pixel to coordinates */
 				xi = x[0] + i * xgap;
 				yi = y[0] + j * ygap;
@@ -39,14 +39,18 @@ int julia(const double *x, int xres, const double *y, int yres, const double *c,
 
 				radius = 0.0;
 				count = 0;
+
+				xisq = xi * xi;
+				yisq = yi * yi;
 				while ( radius <= 4.0 && count < maxIterations )
 				{
 					double savex2 = xi;
-					xi = xi * xi - yi * yi + savex;
+					xi = xisq - yisq + savex;
 					yi = 2.0f * savex2 * yi + savey;
-					radius = xi * xi + yi * yi;
+					xisq = xi * xi;
+					yisq = yi * yi;
+					radius = xisq + yisq;
 					count++;
-
 				}
 
 				if(count > maxIterationCount )

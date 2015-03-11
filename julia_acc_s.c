@@ -14,7 +14,7 @@ int julia(const float *x, int xres, const float *y, int yres, const float *c,
 	srand(time(NULL)); // Seed random value generator
 	int maxIterationCount = 0, i, j;
 
-	float xgap, ygap, savex, savey;
+	float xgap, ygap, savex, savey, xisq, yisq;
 	xgap = (x[1] - x[0]) / xres;
 	ygap = (y[1] - y[0]) / yres;
 
@@ -39,12 +39,17 @@ int julia(const float *x, int xres, const float *y, int yres, const float *c,
 
 				radius = 0.0;
 				count = 0;
+
+				xisq = xi * xi;
+				yisq = yi * yi;
 				while ( radius <= 4.0 && count < maxIterations )
 				{
 					float savex2 = xi;
-					xi = xi * xi - yi * yi + savex;
+					xi = xisq - yisq + savex;
 					yi = 2.0f * savex2 * yi + savey;
-					radius = xi * xi + yi * yi;
+					xisq = xi * xi;
+					yisq = yi * yi;
+					radius = xisq + yisq;
 					count++;
 				}
 
