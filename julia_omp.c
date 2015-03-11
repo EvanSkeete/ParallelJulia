@@ -1,3 +1,12 @@
+/*
+ *	Names:	Nicholas Cianflone - Joshua Segeren  - Evan Skeete      - Michael Jansen
+ *	ID:		1065021 (cianflnp)   1048766 (segerej) 1063790 (skeeteel) 1046843 (jansenmp)
+ *	Date:		11 March 2015
+ *
+ *	Description:
+ *	-	julia_omp.c is a OpenMP implementation of both Mandelbrot and Julia sets
+ */
+
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>

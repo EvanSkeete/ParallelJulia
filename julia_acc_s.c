@@ -1,3 +1,12 @@
+/*
+ *	Names:	Nicholas Cianflone - Joshua Segeren  - Evan Skeete      - Michael Jansen
+ *	ID:		1065021 (cianflnp)   1048766 (segerej) 1063790 (skeeteel) 1046843 (jansenmp)
+ *	Date:		11 March 2015
+ *
+ *	Description:
+ *	-	julia_acc_s.c is a single-precision OpenACC implementation of both Mandelbrot and Julia sets
+ */
+
 #include <math.h>
 #include <sys/time.h>
 #include <time.h>
