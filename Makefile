@@ -14,10 +14,10 @@ OBJS_ACC_D =  main.o julia_acc_d.o savebmp.o color.o getparams.o
 all: julia_acc_s julia_acc_d julia_omp
 
 
-julia_acc_s: CFLAGS=-fast -acc -Minfo -ta=nvidia,cc13 -O2
+julia_acc_s: CFLAGS= -acc -Minfo -ta=nvidia,cc13
 julia_acc_s: LDFLAGS=-acc -ta=nvidia,cc13
 
-julia_acc_d: CFLAGS=-fast -acc -Minfo -ta=nvidia,cc13 -O2
+julia_acc_d: CFLAGS= -acc -Minfo -ta=nvidia,cc13
 julia_acc_d: LDFLAGS=-acc -ta=nvidia,cc13
 
 julia_omp: CFLAGS=-O2 -mp
@@ -29,8 +29,6 @@ julia_acc_s: $(OBJS_ACC_S)
 julia_acc_d: $(OBJS_ACC_D)
 	$(CC) $(LDFLAGS) -o $@ $?
 
-julia_omp: $(OBJS1)
-	$(CC) $(LDFLAGS) -o $@ $?
 
 #julia_acc_s: $(OBJS_ACC_S)
 #	pgcc -acc -Minfo=all -ta=nvidia,cc13 -o julia_acc_s $(OBJS_ACC_S)
